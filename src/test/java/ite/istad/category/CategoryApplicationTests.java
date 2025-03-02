@@ -34,7 +34,7 @@ class CategoryApplicationTests {
 
 		testCategory = new Category();
 		testCategory.setId(1L);
-		testCategory.setName("Test Category");
+		testCategory.setName("Hello World");
 	}
 
 	@Test
@@ -48,7 +48,7 @@ class CategoryApplicationTests {
 		// Assert
 		assertNotNull(result);
 		assertEquals(1L, result.getId());
-		assertEquals("Test Category", result.getName());
+		assertEquals("Hello World", result.getName());
 		verify(categoryService, times(1)).getCategoryById(1L);
 	}
 
@@ -64,7 +64,7 @@ class CategoryApplicationTests {
 		// Assert
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals("Test Category", result.get(0).getName());
+		assertEquals("Hello World", result.get(0).getName());
 		verify(categoryService, times(1)).getCategories();
 	}
 
