@@ -1,8 +1,8 @@
 package ite.istad.category.service.impl;
 
 import ite.istad.category.dto.CategoryCreateRequest;
-import ite.istad.category.model.Category;
-import ite.istad.category.repository.CategoryRepository;
+import ite.istad.category.model.primary.Category;
+import ite.istad.category.repository.primaryRepo.CategoryRepository;
 import ite.istad.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

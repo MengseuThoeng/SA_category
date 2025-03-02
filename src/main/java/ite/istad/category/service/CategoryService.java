@@ -1,7 +1,7 @@
 package ite.istad.category.service;
 
 import ite.istad.category.dto.CategoryCreateRequest;
-import ite.istad.category.model.Category;
+import ite.istad.category.model.primary.Category;
 
 import java.util.List;
 

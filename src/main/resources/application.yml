@@ -7,15 +7,26 @@ spring:
   #      password: admin
 
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-  datasource:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+  primary-datasource:
     username: postgres
     password: postgres
-    url: jdbc:postgresql://localhost:5168/postgres
+    jdbcUrl: jdbc:postgresql://localhost:5168/postgres
     driver-class-name: org.postgresql.Driver
+  secondary-datasource:
+    username: root
+    password:
+    jdbcUrl: jdbc:mysql://localhost:3306/st10
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+#  datasource:
+#    username: postgres
+#    password: postgres
+#    url: jdbc:postgresql://localhost:5168/postgres
+#    driver-class-name: com.mysql.cj.jdbc.Driver

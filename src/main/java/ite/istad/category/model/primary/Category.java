@@ -1,4 +1,4 @@
-package ite.istad.category.model;
+package ite.istad.category.model.primary;
 
 
 import jakarta.persistence.*;

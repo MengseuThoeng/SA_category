@@ -1,7 +1,7 @@
 package ite.istad.category;
 
 import ite.istad.category.controller.CategoryController;
-import ite.istad.category.model.Category;
+import ite.istad.category.model.primary.Category;
 import ite.istad.category.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

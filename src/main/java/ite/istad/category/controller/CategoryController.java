@@ -2,8 +2,7 @@ package ite.istad.category.controller;
 
 
 import ite.istad.category.dto.CategoryCreateRequest;
-import ite.istad.category.model.Category;
-import ite.istad.category.repository.CategoryRepository;
+import ite.istad.category.model.primary.Category;
 import ite.istad.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
