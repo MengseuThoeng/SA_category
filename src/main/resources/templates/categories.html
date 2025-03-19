@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+<!-- Main Container -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header Card -->
+    <div class="bg-white shadow-sm rounded-lg mb-8 p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Categories</h1>
+                <p class="text-gray-500 mt-1">Manage your product categories</p>
+            </div>
+            <a th:href="@{/categories/new}"
+               class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                <i class="fas fa-plus mr-2"></i>
+                Add Category
+            </a>
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Categories Table Section -->
+        <div class="lg:w-2/3 w-full">
+            <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-800">All Categories</h2>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tr th:each="category : ${categories}" class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${category.id}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" th:text="${category.name}"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span th:if="${!category.isDeleted}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                <span th:if="${category.isDeleted}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                            Deleted
+                                        </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a th:href="@{/categories/edit/{id}(id=${category.id})}"
+                                   class="text-indigo-600 hover:text-indigo-900 mr-3 transition-colors">
+                                    <i class="fas fa-edit"></i>
+                                    <span class="sr-only">Edit</span>
+                                </a>
+                                <form th:action="@{/categories/delete/{id}(id=${category.id})}"
+                                      method="post"
+                                      class="inline">
+                                    <button type="submit"
+                                            class="text-red-600 hover:text-red-900 transition-colors">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <span class="sr-only">Delete</span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <!-- Empty state -->
+                        <tr th:if="${#lists.isEmpty(categories)}">
+                            <td colspan="4" class="px-6 py-10 text-center text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-folder-open text-gray-300 text-4xl mb-3"></i>
+                                    <p>No categories found</p>
+                                    <p class="text-sm mt-1">Add your first category to get started</p>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Section (for Add/Edit) -->
+        <div th:if="${showForm}" class="lg:w-1/3 w-full">
+            <div class="bg-white shadow-sm rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-gray-800 mb-6"
+                    th:text="${editId != null} ? 'Edit Category' : 'New Category'"></h2>
+
+                <form th:action="${editId != null} ? @{/categories/update(id=${editId})} : @{/categories/save}"
+                      th:object="${categoryCreateRequest}"
+                      method="post"
+                      class="space-y-6">
+
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Category Name</label>
+                        <input type="text"
+                               id="name"
+                               th:field="*{name}"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                               placeholder="Enter category name"
+                               required>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox"
+                               id="isDeleted"
+                               th:field="*{isDeleted}"
+                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                        <label for="isDeleted" class="ml-2 block text-sm text-gray-700">
+                            Marked as deleted
+                        </label>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <a th:href="@{/categories}"
+                           class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Cancel
+                        </a>
+                        <button type="submit"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Save Category
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

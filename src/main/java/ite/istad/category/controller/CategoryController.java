@@ -1,46 +1,67 @@
 package ite.istad.category.controller;
 
-
 import ite.istad.category.dto.CategoryCreateRequest;
 import ite.istad.category.model.Category;
-import ite.istad.category.repository.CategoryRepository;
 import ite.istad.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/v1/categories")
+@Controller
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-
-    @GetMapping("/{id}")
-    public Category getCategory(@PathVariable Long id) {
-        return categoryService.getCategoryById(id);
-    }
-
     @GetMapping
-    public List<Category> getCategories() {
-        return categoryService.getCategories();
+    public String listCategories(Model model) {
+        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("showForm", false);
+        return "categories";
     }
 
-
-    @PostMapping
-    public void addCategory(@RequestBody CategoryCreateRequest category) {
-        categoryService.addCategory(category);
+    @GetMapping("/new")
+    public String showAddForm(Model model) {
+        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("categoryCreateRequest", new CategoryCreateRequest("", false));
+        model.addAttribute("showForm", true);
+        model.addAttribute("editId", null);
+        return "categories";
     }
 
-    @PutMapping("/{id}")
-    public void updateCategory(@RequestBody CategoryCreateRequest category, @PathVariable Long id) {
-        categoryService.updateCategory(category,id);
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Category category = categoryService.getCategoryById(id);
+        CategoryCreateRequest request = new CategoryCreateRequest(
+                category.getName(),
+                category.getIsDeleted()
+        );
+
+        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("categoryCreateRequest", request);
+        model.addAttribute("showForm", true);
+        model.addAttribute("editId", id);
+        return "categories";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable Long id) {
+    @PostMapping("/save")
+    public String saveCategory(@ModelAttribute CategoryCreateRequest categoryCreateRequest) {
+        categoryService.addCategory(categoryCreateRequest);
+        return "redirect:/categories";
+    }
+
+    @PostMapping("/update")
+    public String updateCategory(@RequestParam("id") Long id,
+                                 @ModelAttribute CategoryCreateRequest categoryCreateRequest) {
+        categoryService.updateCategory(categoryCreateRequest, id);
+        return "redirect:/categories";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
+        return "redirect:/categories";
     }
 }
