@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -44,8 +45,17 @@ dependencies {
 
 //	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mockito:mockito-core:5.11.0'
+
+	// Selenium WebDriver for UI testing
+	testImplementation 'org.seleniumhq.selenium:selenium-java:4.18.1' // Use the latest version
+
+	// WebDriverManager to manage browser drivers
+	testImplementation 'io.github.bonigarcia:webdrivermanager:5.7.0'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	jvmArgs '-XX:+EnableDynamicAgentLoading', '-Xshare:off'
+
 }

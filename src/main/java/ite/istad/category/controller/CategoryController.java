@@ -3,9 +3,11 @@ package ite.istad.category.controller;
 import ite.istad.category.dto.CategoryCreateRequest;
 import ite.istad.category.model.Category;
 import ite.istad.category.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -47,14 +49,32 @@ public class CategoryController {
     }
 
     @PostMapping("/save")
-    public String saveCategory(@ModelAttribute CategoryCreateRequest categoryCreateRequest) {
+    public String saveCategory(@Valid @ModelAttribute CategoryCreateRequest categoryCreateRequest,
+                               BindingResult bindingResult,
+                               Model model) {
+        if (bindingResult.hasErrors()) {
+            // If validation fails, re-render the form with errors
+            model.addAttribute("categories", categoryService.getCategories());
+            model.addAttribute("showForm", true);
+            model.addAttribute("editId", null);
+            return "categories";
+        }
         categoryService.addCategory(categoryCreateRequest);
         return "redirect:/categories";
     }
 
     @PostMapping("/update")
     public String updateCategory(@RequestParam("id") Long id,
-                                 @ModelAttribute CategoryCreateRequest categoryCreateRequest) {
+                                 @Valid @ModelAttribute CategoryCreateRequest categoryCreateRequest,
+                                 BindingResult bindingResult,
+                                 Model model) {
+        if (bindingResult.hasErrors()) {
+            // If validation fails, re-render the form with errors
+            model.addAttribute("categories", categoryService.getCategories());
+            model.addAttribute("showForm", true);
+            model.addAttribute("editId", id);
+            return "categories";
+        }
         categoryService.updateCategory(categoryCreateRequest, id);
         return "redirect:/categories";
     }
